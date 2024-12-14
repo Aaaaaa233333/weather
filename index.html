@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反馈界面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .feedback-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+
+        .alert {
+            margin-top: 15px;
+            text-align: center;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="feedback-form">
+        <h2>联系我们</h2>
+        <form id="feedback-form">
+            <div class="form-group">
+                <label for="user-email">电子邮件</label>
+                <input type="email" id="user-email" name="user_email" placeholder="请输入您的电子邮件" required>
+            </div>
+            <div class="form-group">
+                <label for="user-message">留言</label>
+                <textarea id="user-message" name="user_message" placeholder="告诉我们您的想法..." required></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit">提交反馈</button>
+            </div>
+            <div class="alert" id="response-message"></div>
+        </form>
+    </div>
+
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    
+    <script>
+        (function() {
+            // 用你的 Public Key 替换这里
+            emailjs.init('DsfcvThQBnJFiyTmM'); 
+
+            document.getElementById('feedback-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const userEmail = document.getElementById('user-email').value;
+                const userMessage = document.getElementById('user-message').value;
+
+                // 禁用提交按钮，防止重复点击
+                document.querySelector('button[type="submit"]').disabled = true;
+
+                const templateParams = {
+                    user_email: userEmail,
+                    user_message: userMessage,
+                };
+
+                emailjs.send('service_1bg72vb', 'template_kszmb5q', templateParams)
+                    .then(function(response) {
+                        document.getElementById('response-message').textContent = '感谢您的反馈！我们已收到您的留言。';
+                        document.getElementById('response-message').style.color = 'green';
+                    }, function(error) {
+                        document.getElementById('response-message').textContent = '提交失败，请稍后再试。';
+                        document.getElementById('response-message').style.color = 'red';
+                    })
+                    .finally(function() {
+                        // 提交完成后重新启用按钮
+                        document.querySelector('button[type="submit"]').disabled = false;
+                    });
+            });
+        })();
+    </script>
+</body>
+</html>
